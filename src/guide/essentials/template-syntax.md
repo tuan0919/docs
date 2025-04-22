@@ -1,24 +1,24 @@
 # Template Syntax {#template-syntax}
 
-Vue uses an HTML-based template syntax that allows you to declaratively bind the rendered DOM to the underlying component instance's data. All Vue templates are syntactically valid HTML that can be parsed by spec-compliant browsers and HTML parsers.
+Vue sử dụng cú pháp template dựa trên HTML, cho phép bạn bind một cách khai báo một DOM đã được render đến dữ liệu của instance component phía dưới. Tất cả các template trong Vue đều là HTML hợp lệ về mặt cú pháp, có thể được parse bởi các trình duyệt và công cụ xử lý HTML tuân thủ tiêu chuẩn.
 
-Under the hood, Vue compiles the templates into highly-optimized JavaScript code. Combined with the reactivity system, Vue can intelligently figure out the minimal number of components to re-render and apply the minimal amount of DOM manipulations when the app state changes.
+Bên dưới, Vue sẽ biên dịch các template thành các mã JavaScript được tối ưu hóa cao. Kết hợp với hệ thống phản ứng (reactivity system), Vue đủ khôn khéo để tự động xác định số lượng tối thiểu các component cần được render và áp dụng tối thiểu các thao tác cần sử dụng để thay đổi DOM mỗi khi trạng thái của ứng dụng thay đổi.
 
-If you are familiar with Virtual DOM concepts and prefer the raw power of JavaScript, you can also [directly write render functions](/guide/extras/render-function) instead of templates, with optional JSX support. However, do note that they do not enjoy the same level of compile-time optimizations as templates.
+Nếu bạn đã quen thuộc với các khái niệm về Virtual DOM và thích sử dụng JavaScript thuần hơn, có thể [viết trực tiếp hàm render](/guide/extras/render-function) thay vì sử dụng template, thậm chí có thể dùng thêm JSX nếu muốn. Tuy nhiên, lưu ý rằng các hàm render sẽ không tận dụng được mức tối ưu hóa khi biên dịch như template.
 
 ## Text Interpolation {#text-interpolation}
 
-The most basic form of data binding is text interpolation using the "Mustache" syntax (double curly braces):
+Hình thức để bind dữ liệu cơ bản nhất là chèn nội dung văn bản (text interpolation) bằng cú pháp "Mustache" (hai dấu ngoặc kép):
 
 ```vue-html
 <span>Message: {{ msg }}</span>
 ```
 
-The mustache tag will be replaced with the value of the `msg` property [from the corresponding component instance](/guide/essentials/reactivity-fundamentals#declaring-reactive-state). It will also be updated whenever the `msg` property changes.
+Cú pháp ngoặc kép đôi sẽ được thay thế bằng giá trị của thuộc tính msg từ instance của component tương ứng. Giá trị hiển thị cũng sẽ tự động cập nhật mỗi khi thuộc tính `msg` thay đổi.
 
 ## Raw HTML {#raw-html}
 
-The double mustaches interpret the data as plain text, not HTML. In order to output real HTML, you will need to use the [`v-html` directive](/api/built-in-directives#v-html):
+Ngoặc kép đôi diễn giải dữ liệu dưới dạng plain text, chứ không phải HTML. Để sử dụng một HTML thật sự, bạn cần sử dụng [chỉ thị `v-html`](/api/built-in-directives#v-html):
 
 ```vue-html
 <p>Using text interpolation: {{ rawHtml }}</p>
@@ -34,41 +34,41 @@ The double mustaches interpret the data as plain text, not HTML. In order to out
   <p>Using v-html directive: <span v-html="rawHtml"></span></p>
 </div>
 
-Here we're encountering something new. The `v-html` attribute you're seeing is called a **directive**. Directives are prefixed with `v-` to indicate that they are special attributes provided by Vue, and as you may have guessed, they apply special reactive behavior to the rendered DOM. Here, we're basically saying "keep this element's inner HTML up-to-date with the `rawHtml` property on the current active instance."
+Tại đây chúng ta bắt gặp một khái niệm mới. Thuộc tính `v-html` mà bạn thấy được gọi là một **chỉ thị** (directive). Các chỉ thị đều được đặt tiền tố `v-` để cho biết rằng đây là những thuộc tính đặc biệt do Vue cung cấp. Như bạn có thể đoán, chúng áp dụng các hành vi phản ứng đặc biệt lên DOM sau khi được render. Trong trường hợp này, chúng ta đang nói với Vue rằng: "hãy giữ nội dung HTML bên trong phần tử này luôn được cập nhật theo thuộc tính `rawHtml` của instance hiện tại."
 
-The contents of the `span` will be replaced with the value of the `rawHtml` property, interpreted as plain HTML - data bindings are ignored. Note that you cannot use `v-html` to compose template partials, because Vue is not a string-based templating engine. Instead, components are preferred as the fundamental unit for UI reuse and composition.
+Nội dung của `span` sẽ được thay thế bằng giá trị của thuộc tính `rawHtml`, được chèn dưới dạng HTML thuần - các dữ liệu được bind sẽ bị bỏ qua. Chú ý là bạn không thể sử dụng `v-html` để soạn thảo các phần template, bởi vì Vue không phải là một engine tạo template dựa trên chuỗi. Thay vào đó, component nên được xem là đang vị cơ bản cho việc tái sử dụng hay kết hợp UI.
 
 :::warning Security Warning
-Dynamically rendering arbitrary HTML on your website can be very dangerous because it can easily lead to [XSS vulnerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting). Only use `v-html` on trusted content and **never** on user-provided content.
+Việc hiển thị HTML tùy ý một cách động trên trang web của bạn có thể rất nguy hiểm vì nó dễ dẫn đến [lỗ hổng XSS](https://en.wikipedia.org/wiki/Cross-site_scripting). Chỉ sử dụng `v-html` trên nội dung đáng tin cậy và **không bao giờ** sử dụng trên nội dung do người dùng cung cấp.
 :::
 
 ## Attribute Bindings {#attribute-bindings}
 
-Mustaches cannot be used inside HTML attributes. Instead, use a [`v-bind` directive](/api/built-in-directives#v-bind):
+Cú pháp Ngoặc kép đôi không thể được sử dụng bên trong các thuộc tính HTML. Thay vào đó, sử dụng [chỉ thị `v-bind`](/api/built-in-directives#v-bind):
 
 ```vue-html
 <div v-bind:id="dynamicId"></div>
 ```
 
-The `v-bind` directive instructs Vue to keep the element's `id` attribute in sync with the component's `dynamicId` property. If the bound value is `null` or `undefined`, then the attribute will be removed from the rendered element.
+Chỉ thị `v-bind` sẽ yêu cầu Vue giữ cho thuộc tính `id` của phần tử đồng bộ với thuộc tính `dynamicId` của chính phần tử đó. Nếu giá trị được liên kết là `null` hoặc `undefined`, thì thuộc tính sẽ bị xóa khỏi phần tử được render.
 
 ### Shorthand {#shorthand}
 
-Because `v-bind` is so commonly used, it has a dedicated shorthand syntax:
+Bởi vì `v-bind` được sử dụng phổ biến, cho nên nó có một cú pháp viết tắt như sau:
 
 ```vue-html
 <div :id="dynamicId"></div>
 ```
 
-Attributes that start with `:` may look a bit different from normal HTML, but it is in fact a valid character for attribute names and all Vue-supported browsers can parse it correctly. In addition, they do not appear in the final rendered markup. The shorthand syntax is optional, but you will likely appreciate it when you learn more about its usage later.
+Thuộc tính bắt đầu với `:` có thể trông khá là lạ đối với HTML thông thường, nhưng nó thực sự là một kí tự khả dụng để làm tên thuộc tính và tất cả các browser hỡ trợ Vue có thể parse nó một cách chính xác. Thêm vào đó, chúng sẽ không xuất hiện ở markup được render ra. Cú pháp viết tắt là tùy chọn, nhưng bạn sẽ bắt gặp nó khi bạn tìm hiểu thêm về nó sau.
 
-> For the rest of the guide, we will be using the shorthand syntax in code examples, as that's the most common usage for Vue developers.
+> Trong phần còn lại của bài hướng dẫn, chúng ta sẽ sử dụng cú pháp viết tắt trong các đoạn code ví dụ, vì nó là cách dùng phổ biến nhất đối với Vue developer.
 
 ### Same-name Shorthand {#same-name-shorthand}
 
-- Only supported in 3.4+
+- Chỉ hỗ trợ cho phiên bản 3.4+
 
-If the attribute has the same name with the JavaScript value being bound, the syntax can be further shortened to omit the attribute value:
+Nếu thuộc tính có cùng tên với giá trị JavaScript được đính kèm, cú pháp còn có thể viết gọn hơn nữa để bỏ qua giá trị thuộc tính:
 
 ```vue-html
 <!-- same as :id="id" -->
@@ -78,23 +78,23 @@ If the attribute has the same name with the JavaScript value being bound, the sy
 <div v-bind:id></div>
 ```
 
-This is similar to the property shorthand syntax when declaring objects in JavaScript. Note this is a feature that is only available in Vue 3.4 and above.
+Điều này tương tự như cú pháp viết tắt thuộc tính khi khai báo đối tượng trong JavaScript. Lưu ý đây là tính năng chỉ khả dụng trong Vue 3.4 trở lên.
 
 ### Boolean Attributes {#boolean-attributes}
 
-[Boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) are attributes that can indicate true / false values by their presence on an element. For example, [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled) is one of the most commonly used boolean attributes.
+[Thuộc tính Boolean](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) là các thuộc tính có thể chứa giá trị là true / false thông qua sự hiện diện của chúng trên một phần tử. Chẳng hạn, [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled) là một trong số các thuộc tính boolean phổ biến nhất được sử dụng rộng rãi.
 
-`v-bind` works a bit differently in this case:
+`v-bind` sẽ hoạt động khác một chút trong trường hợp này:
 
 ```vue-html
 <button :disabled="isButtonDisabled">Button</button>
 ```
 
-The `disabled` attribute will be included if `isButtonDisabled` has a [truthy value](https://developer.mozilla.org/en-US/docs/Glossary/Truthy). It will also be included if the value is an empty string, maintaining consistency with `<button disabled="">`. For other [falsy values](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) the attribute will be omitted.
+Thuộc tính `disabled` sẽ được thêm vào nếu `isButtonDisabled` là [giá trị truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy). Nó cũng sẽ được thêm vào nếu giá trị là một chuỗi rỗng, để duy trì tính nhất quán với `<button disabled="">`. Ngược lại nếu là [giá trị falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) thì thuộc tính sẽ bị loại bỏ.
 
 ### Dynamically Binding Multiple Attributes {#dynamically-binding-multiple-attributes}
 
-If you have a JavaScript object representing multiple attributes that looks like this:
+Nếu bạn có một JavaScript object chứa nhiều thuộc tính như sau:
 
 <div class="composition-api">
 
@@ -122,7 +122,7 @@ data() {
 
 </div>
 
-You can bind them to a single element by using `v-bind` without an argument:
+Bạn có thể bind chúng vào một phần tử duy nhất bằng cách sử dụng `v-bind` mà không có tham số:
 
 ```vue-html
 <div v-bind="objectOfAttrs"></div>
@@ -130,7 +130,7 @@ You can bind them to a single element by using `v-bind` without an argument:
 
 ## Using JavaScript Expressions {#using-javascript-expressions}
 
-So far we've only been binding to simple property keys in our templates. But Vue actually supports the full power of JavaScript expressions inside all data bindings:
+Cho đến hiện tại chúng ta chỉ mới ràng buộc tới các thuộc tính khóa đơn giản cho template. Nhưng Vue thực tế hỗ trợ việc viết các biểu thức JavaScript vào bên trong các dữ liệu được ràng buộc:
 
 ```vue-html
 {{ number + 1 }}
@@ -142,18 +142,18 @@ So far we've only been binding to simple property keys in our templates. But Vue
 <div :id="`list-${id}`"></div>
 ```
 
-These expressions will be evaluated as JavaScript in the data scope of the current component instance.
+Những biểu thức này sẽ được xem như là mã JavaScript với phạm vi dữ liệu nằm bên trong component instance hiện tại.
 
-In Vue templates, JavaScript expressions can be used in the following positions:
+Trong Vue template, biểu thức JavaScript có thể nằm tại các vị trí sau:
 
-- Inside text interpolations (mustaches)
-- In the attribute value of any Vue directives (special attributes that start with `v-`)
+- Bên trong dấu ngoặc kép đôi.
+- Là giá trị thuộc tính của bất kì chỉ thị Vue nào (các thuộc tính bắt đầu với `v-`)
 
 ### Expressions Only {#expressions-only}
 
-Each binding can only contain **one single expression**. An expression is a piece of code that can be evaluated to a value. A simple check is whether it can be used after `return`.
+Mỗi ràng buộc chỉ có thể chứa **một biểu thức duy nhất**. Biểu thức là một đoạn mã có thể được đánh giá thành một giá trị. Cách kiểm tra đơn giản là liệu nó có thể được sử dụng sau `return` hay không.
 
-Therefore, the following will **NOT** work:
+Vì thế, các trường hợp dưới đây sẽ **KHÔNG** hợp lệ:
 
 ```vue-html
 <!-- this is a statement, not an expression: -->
@@ -165,7 +165,7 @@ Therefore, the following will **NOT** work:
 
 ### Calling Functions {#calling-functions}
 
-It is possible to call a component-exposed method inside a binding expression:
+Có thể gọi phương thức component-exposed ra bên trong biểu thức ràng buộc:
 
 ```vue-html
 <time :title="toTitleDate(date)" :datetime="date">
@@ -174,7 +174,7 @@ It is possible to call a component-exposed method inside a binding expression:
 ```
 
 :::tip
-Functions called inside binding expressions will be called every time the component updates, so they should **not** have any side effects, such as changing data or triggering asynchronous operations.
+Hàm được gọi trong một biểu thức ràng buộc sẽ bị gọi đến mỗi khi component đó được cập nhật, vì vậy nên chúng **không nên** có bất kì side effect nào, chẳng hạn như thay đổi dữ liệu hoặc tạo ra một tác vụ bất đồng bộ nào đó.
 :::
 
 ### Restricted Globals Access {#restricted-globals-access}
